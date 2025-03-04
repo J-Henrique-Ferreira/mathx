@@ -102,9 +102,19 @@
             </div>
 
         </div>
-
     </form>
 
+    <div class="container mt-2 p-0">
+        @if ($errors->any())
+            <div class="alert alert-danger mx-0">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+    </div>
     <!-- footer -->
     <footer class="text-center mt-5">
         <p class="text-secondary">MathX &copy; <span class="text-info">{{date("Y")}}</span></p>
