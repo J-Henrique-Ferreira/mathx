@@ -12,7 +12,7 @@ class MainController extends Controller
         return view(view: 'home');
     }
 
-    public function generateExercise(Request $request)
+    public function generateExercise(Request $request): View
     {
         $request->validate([
             'check_sum' => 'required_without_all:check_subtraction,check_multiplication,check_division',
@@ -43,18 +43,36 @@ class MainController extends Controller
             $number_one = rand($min, $max);
             $number_two = rand($min, $max);
             $operation = $operations[array_rand($operations)];
-            $exercises[] = [
-                'exercise_number' => $i + 1,
-                'number_one' => $number_one,
-                'number_two' => $number_two,
-                'operation' => $operation,
-                'exercise' => $number_one . ' ' . $this->handleOperationStrigs($operation) . ' ' . $number_two . ' = ',
-                'result' => $this->calculate($number_one, $number_two, $operation),
-            ];
+            $resultOperation = round(
+                $this->calculate($number_one, $number_two, $operation),
+                2
+            );
+            $exercises[] = $this->handleCreateExercises(
+                index: $i,
+                operation: $operation,
+                number_one: $number_one,
+                number_two: $number_two,
+                resultOperation: $resultOperation
+            );
         }
 
-        dd($exercises);
+        $request->session()->put('exercises', $exercises);
+        return view('operations', ["exercises" => $exercises]);
     }
+
+    public function printExercises(Request $request)
+    {
+        $exercises = $request->session()->get('exercises');
+
+        dd($exercises);
+        echo "imprimir os exercicios";
+    }
+
+    public function exportExercises(Request $request)
+    {
+        echo "exportar os exercicios";
+    }
+
 
     private function handleOperationStrigs(string $operation)
     {
@@ -85,21 +103,26 @@ class MainController extends Controller
                 if ($number_two == 0) {
                     return 0;
                 }
-
                 return $number_one / $number_two;
             default:
                 return 0;
         }
     }
 
-    public function printExercises(Request $request)
+    private function handleCreateExercises($index, $number_one, $number_two, $operation, $resultOperation): array
     {
-        echo "imprimir os exercicios";
+        $exercise = [
+            'exercise_number' => $index + 1,
+            'number_one' => $number_one,
+            'number_two' => $number_two,
+            'operation' => $operation,
+            'exercise' => $number_one . ' ' . $this->handleOperationStrigs($operation) . ' ' . $number_two . ' = ',
+            'exercise_resolve' => $number_one . ' ' . $this->handleOperationStrigs($operation) . ' ' . $number_two . ' = ' . $resultOperation,
+            'result' => $resultOperation,
+        ];
+
+        return $exercise;
     }
 
-    public function exportExercises(Request $request)
-    {
-        echo "exportar os exercicios";
-    }
 }
 

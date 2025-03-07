@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get(uri: '/',action: [MainController::class,'home'])->name('home');
-Route::post(uri: '/generate-exercise', action: [MainController::class,'generateExercise'])->name('generateExercises');
-Route::get(uri: '/print-exercises', action: [MainController::class,'printExercises'])->name('printExercises');
-Route::get(uri: '/export-exercises', action: [MainController::class,'exportExercises'])->name('exportExercises');
+Route::get(uri: '/', action: [MainController::class, 'home'])->name('home');
+Route::post(uri: '/generate-exercise', action: [MainController::class, 'generateExercise'])->name('generateExercises');
+Route::get(uri: '/print-exercises', action: [MainController::class, 'printExercises'])->name('printExercises');
+Route::get(uri: '/export-exercises', action: [MainController::class, 'exportExercises'])->name('exportExercises');
