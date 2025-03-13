@@ -62,15 +62,36 @@ class MainController extends Controller
 
     public function printExercises(Request $request)
     {
+        $this->checkExercisesSession();
         $exercises = $request->session()->get('exercises');
 
-        dd($exercises);
-        echo "imprimir os exercicios";
+        return view('print', ["exercises" => $exercises]);
     }
 
     public function exportExercises(Request $request)
     {
-        echo "exportar os exercicios";
+        // echo "exportar os exercicios";
+        $this->checkExercisesSession();
+
+        $exercises = session()->get('exercises');
+        $fileName = 'exercises_' . env('APP_NAME') . '_' . date('YmdH\is') . '.txt';
+
+        $content = "Exercises \n" . str_repeat("- ", 20) . "\n";
+
+        foreach ($exercises as $exercise) {
+            $content .= "(" . $exercise['exercise_number'] . ')- ' . $exercise['exercise'] . "\n";
+        }
+
+        $content .= "\n";
+        $content .= "Solutions\n" . str_repeat("- ", 20) . "\n";
+
+        foreach ($exercises as $exercise) {
+            $content .= "(" . $exercise['exercise_number'] . ')- ' . $exercise['exercise'] . $exercise['result'] . "\n";
+        }
+
+        return response($content)
+            ->header('Content-Type', 'text/plain')
+            ->header('Content-Disposition', 'attachment; filename="' . $fileName . '"');
     }
 
 
@@ -112,7 +133,7 @@ class MainController extends Controller
     private function handleCreateExercises($index, $number_one, $number_two, $operation, $resultOperation): array
     {
         $exercise = [
-            'exercise_number' => $index + 1,
+            'exercise_number' => str_pad($index + 1, 2, "0", STR_PAD_LEFT),
             'number_one' => $number_one,
             'number_two' => $number_two,
             'operation' => $operation,
@@ -122,6 +143,13 @@ class MainController extends Controller
         ];
 
         return $exercise;
+    }
+
+    private function checkExercisesSession()
+    {
+        if (!session()->has('exercises')) {
+            return redirect()->route('home');
+        }
     }
 
 }

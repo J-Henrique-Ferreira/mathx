@@ -20,29 +20,18 @@
         <img src="{{ asset('assets/images/logo.jpg') }}" alt="logo" class="img-fluid" width="250px">
     </div>
 
-
-
-
-
-
-
     <!-- operations -->
     <div class="container">
-
         <hr>
-
         <div class="row">
-
             <!-- each operation -->
             @foreach ($exercises as $exercise)
-
                 <div class="col-3 display-6 mb-3">
                     <span class="badge bg-dark text-left">
                         {{ str_pad($exercise['exercise_number'], 2, "0", STR_PAD_LEFT) }}
                     </span>
                     <span>{{ $exercise['exercise'] }}</span>
                 </div>
-
             @endforeach
 
             <hr>
@@ -61,16 +50,6 @@
                 </div>
             </div>
         </div>
-
-
-
-
-
-
-
-
-
-
 
         <!-- footer -->
         <footer class="text-center mt-5">
